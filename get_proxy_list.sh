@@ -7,6 +7,11 @@ socks_file="proxy_list_socks.txt"
 socks4_file="proxy_list_socks4.txt"
 socks5_file="proxy_list_socks5.txt"
 
+# socks-proxy.net
+paste -d: \
+  <(pup -f <(curl -sL https://www.socks-proxy.net/) '#proxylisttable tr td:nth-child(1) text{}') \
+  <(pup -f <(curl -sL https://www.socks-proxy.net/) '#proxylisttable tr td:nth-child(2) text{}')
+
 # my-proxy.com (socks4)
 pup -f <(curl -sL http://www.my-proxy.com/free-socks-4-proxy.html) ".list text{}" \
   | awk -F# '{print $1}' \
