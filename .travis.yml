@@ -6,10 +6,16 @@ addons:
     packages:
       - bc
       - jq
+      - nodejs
       - wget
+env:
+  - FILEOUT="proxy_list_socks_all.txt"
 install:
   - go get github.com/ericchiang/pup
 script:
-  - ./get_proxy_list.sh
+  - ./get_proxy_list.sh > $FILEOUT
 after_script:
-  - wc -l *.txt
+  - sort -o $FILEOUT $FILEOUT
+  - ex +'%!uniq' -scwq $FILEOUT
+  - wc -l $FILEOUT
+  - cat $FILEOUT
