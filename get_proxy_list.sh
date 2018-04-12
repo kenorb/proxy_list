@@ -22,6 +22,12 @@ pup -f <(curl -sL http://www.my-proxy.com/free-socks-5-proxy.html) ".list text{}
   | awk -F# '{print $1}' \
   | tee "$socks5_file"
 
+# xroxy.com (socks)
+for i in {1..20}; do
+  curl -s "http://www.xroxy.com/proxylist.php?port=&type=All_socks&ssl=&country=&latency=&reliability=&sort=reliability&desc=true&pnum=${i}" -A Mozilla | grep 'proxy:name' | awk -F"host=|&port=|&isSocks" '{print $2":"$3}'
+done \
+  | tee "$socks_file"
+
 # gatherproxy.com (sockslist)
 pup -f <(curl -sL 'http://www.gatherproxy.com/sockslist') "script text{}" \
   | paste -d: - - \
