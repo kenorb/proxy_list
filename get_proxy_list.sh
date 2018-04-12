@@ -8,12 +8,14 @@ socks4_file="proxy_list_socks4.txt"
 socks5_file="proxy_list_socks5.txt"
 
 # sockslist.net
-for v in {4..5}; do
-  paste -d: \
-    <(pup -f <(curl -sL http://sockslist.net/list/proxy-socks-${v}-list/) 'td.t_ip text{}') \
-    <(pup -f <(curl -sL http://sockslist.net/list/proxy-socks-${v}-list/) 'td.t_port text{}' \
-      | grep -o "[0-9]\+") \
-    | tee "$socks_file"
+for p in {1..2}; do
+  for v in {4..5}; do
+    paste -d: \
+      <(pup -f <(curl -sL http://sockslist.net/list/proxy-socks-${v}-list/${p}#proxylist) 'td.t_ip text{}') \
+      <(pup -f <(curl -sL http://sockslist.net/list/proxy-socks-${v}-list/${p}#proxylist) 'td.t_port text{}' \
+        | grep -o "[0-9]\+") \
+      | tee "$socks_file"
+  done
 done
 
 # socks-proxy.net
