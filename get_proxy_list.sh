@@ -7,6 +7,17 @@ socks_file="proxy_list_socks.txt"
 socks4_file="proxy_list_socks4.txt"
 socks5_file="proxy_list_socks5.txt"
 
+# premproxy.com
+js_uri=$(pup -f <(curl -sL https://premproxy.com/list/) "head script[src]:nth-of-type(2) attr{src}")
+eval $(node < <(curl -sL https://premproxy.com$js_uri) 2>&1 | grep -o "(['0-9][^)]\+)" | paste -d= - - | tr -cd "[:alnum:]=[:space:]\n")
+for p in {1..7}; do
+  pup -f <(curl -sL -A Mozilla https://premproxy.com/list/0${p}.htm) "input[name*=proxyIp] attr{value}" \
+    | while IFS=\| read ip port; do
+        printf "%s:%s\r\n" $ip ${!port}
+      done
+      break;
+done
+
 # sockslist.net
 for p in {1..2}; do
   for v in {4..5}; do
