@@ -1,0 +1,11 @@
+language: go
+go:
+	- "1.10"
+apt:
+  - jq
+install:
+	- go get github.com/ericchiang/pup
+script:
+  - get_proxy_list.sh
+after_script:
+	- wc -l *.txt
