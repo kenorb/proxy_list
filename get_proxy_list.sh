@@ -7,10 +7,20 @@ socks_file="proxy_list_socks.txt"
 socks4_file="proxy_list_socks4.txt"
 socks5_file="proxy_list_socks5.txt"
 
+# sockslist.net
+for v in {4..5}; do
+  paste -d: \
+    <(pup -f <(curl -sL http://sockslist.net/list/proxy-socks-${v}-list/) 'td.t_ip text{}') \
+    <(pup -f <(curl -sL http://sockslist.net/list/proxy-socks-${v}-list/) 'td.t_port text{}' \
+      | grep -o "[0-9]\+") \
+    | tee "$socks_file"
+done
+
 # socks-proxy.net
 paste -d: \
   <(pup -f <(curl -sL https://www.socks-proxy.net/) '#proxylisttable tr td:nth-child(1) text{}') \
-  <(pup -f <(curl -sL https://www.socks-proxy.net/) '#proxylisttable tr td:nth-child(2) text{}')
+  <(pup -f <(curl -sL https://www.socks-proxy.net/) '#proxylisttable tr td:nth-child(2) text{}') \
+  | tee "$socks_file"
 
 # my-proxy.com (socks4)
 pup -f <(curl -sL http://www.my-proxy.com/free-socks-4-proxy.html) ".list text{}" \
